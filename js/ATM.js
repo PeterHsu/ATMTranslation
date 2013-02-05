@@ -22,7 +22,10 @@
 	if(index < hex.length) {
 		var len = hex.length - index
 		ret.push({"key":"溢位","index":index/2,"length":len/2,"hex":hex.substr(index,len),"value":HexToString(hex.substr(index,len))});
-	}
+		$("#err").text("溢位");
+	} else if(index > hex.length) {
+		$("#err").text("長度不足");
+	} else {$("#err").text("");}
 	return ret;
 }
 function getHex(data) {
