@@ -70,12 +70,14 @@ function getSource(t) {
 	}
 }
 function getResult(t) {
-	if(t == "34303031") {
-		return "positive";
-	} else if(t=="30303030") {
-		return "first";
-	} else {
-		return "negative";
+	switch(t) {
+		case "34303031":
+			return "positive";
+		case "30303030":
+		case "30303031":
+			return "first";
+		default:
+			return "negative";
 	}
 }
 Number.prototype.toBinaryString = function() {
@@ -137,9 +139,11 @@ var DataField = {
 		15:{key:"跨行手續費",value:4},
 		17:{key:"狀況代號",value:2},
 		19:{key:"交易日期",value:14},
+		22:{key:"促銷應用訊息",value:16},
 		28:{key:"端末設備型態",value:4},
 		32:{key:"入扣帳日",value:6},
 		38:{key:"實際交易付款金額",value:"C14"},
+		51:{key:"轉入帳號",value:16},
 		52:{key:"轉出帳號",value:16},
 		55:{key:"IC卡備註欄",value:30},
 		56:{key:"交易驗證碼",value:"X2"},
@@ -163,7 +167,27 @@ var FISCMsg = {
 	"2510response被代理positive":    "2602000004000001",
 	"2510response被代理negative":    "2400000000000001",
 	"2510confirmation被代理positive":"2400000000000001",
-	"2510confirmation被代理negative":"2400000000000001"
-	
+	"2510confirmation被代理negative":"2400000000000001",
+	"2521request代理first"          :"24AC201000003201",
+	"2521response代理positive"      :"2400000100000001",
+	"2521response代理negative"      :"2400000000000001",
+	"2521confirmation代理positive":  "2400000000000001",
+	"2521confirmation代理negative":  "2400000000000001",
+	"2521request被代理first":        "240C000100003001",
+	"2521response被代理positive":    "2400000000000001",
+	"2521response被代理negative":    "2400000000000001",
+	"2521confirmation被代理positive":"2400000000000001",
+	"2521confirmation被代理negative":"2400000000000001",
+	"2522response代理positive"      :"2602040104000001",
+	"2524request代理first"          :"24AC201000003301",
+	"2524response代理positive"      :"2602040104000001",
+	"2response代理negative"      :"",
+	"2confirmation代理positive":  "",
+	"2confirmation代理negative":  "",
+	"2request被代理first":        "",
+	"2response被代理positive":    "",
+	"2response被代理negative":    "",
+	"2confirmation被代理positive":"",
+	"2confirmation被代理negative":"",
 }
 
