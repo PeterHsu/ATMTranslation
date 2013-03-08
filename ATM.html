@@ -32,6 +32,7 @@ function ATMParse(data){
 		obj=factory("Host"+HexToString(hex.substr(0,8)));
 	}
 	var index=0;
+	if(obj.superClass != undefined) {obj = obj.superClass;}
 	var ret=Enumerable.from(obj).select(function(m){
 		var len=m.value*2;
 		m.index=index/2;
@@ -251,6 +252,10 @@ function ATM4071() {
 	this.MAC_04=5;
 	this.TERMID_05=6;
 }
+// 當規格與之前定義過的電文相同時可使用superClass屬性來繼承
+function Host4071(){
+	this.superClass = new Host4060();
+}
 function ATM4070() {
 	// INMSGHD
 	this.__交易代號=4;
@@ -292,6 +297,9 @@ function ATM4070() {
 	this.SYNCH_04=5;
 	this.MAC_04=5;
 	this.TERMID_05=6;
+}
+function Host4070(){
+	this.superClass = new Host4060();
 }
 function ATM1020() {
 	// INMSGHD
