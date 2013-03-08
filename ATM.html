@@ -21,74 +21,50 @@
 	<div class="gridStyle" data-bind="koGrid: gridOptions"></div>
 </body>
 <script type="text/javascript">
-function ATMParse(data) {
-	var hex = getHex(data);
+function ATMParse(data){
+	var hex=getHex(data);
 	var obj;
-	if(hex.substr(0,8)=="4E435249") {
+	if(hex.substr(0,8)=="4E435249"){
 		$("#msg").text("ATM to Host");
-		obj = factoryATM(HexToString(hex.substr(28,8)));
-	} else {
+		obj=factory("ATM"+HexToString(hex.substr(28,8)));
+	}else{
 		$("#msg").text("Host to ATM");
-		obj = factoryHost(HexToString(hex.substr(0,8)));
+		obj=factory("Host"+HexToString(hex.substr(0,8)));
 	}
-	var index = 0;
-	var ret = Enumerable.from(obj).select(function(m){
-		var len = m.value * 2;
-		m.index = index/2;
-		m.length = len/2;
-		m.hex = hex.substr(index,len);
-		m.value = HexToString(m.hex);
-		index += len;
+	var index=0;
+	var ret=Enumerable.from(obj).select(function(m){
+		var len=m.value*2;
+		m.index=index/2;
+		m.length=len/2;
+		m.hex=hex.substr(index,len);
+		m.value=HexToString(m.hex);
+		index+=len;
 		return m;
 	}).toArray();
 	// 當資料有發生溢位時, 增加溢位欄位來顯示溢位資料
-	if(index < hex.length) {
-		var len = hex.length - index
+	if(index<hex.length){
+		var len=hex.length-index
 		ret.push({"key":"溢位","index":index/2,"length":len/2,"hex":hex.substr(index,len),"value":HexToString(hex.substr(index,len))});
 		$("#err").text("溢位");
-	} else if(index > hex.length) {
+	}else if(index>hex.length){
 		$("#err").text("長度不足");
-	} else {$("#err").text("");}
+	}else{$("#err").text("");}
 	return ret;
 }
-function getHex(data) {
-	var msg = $(data).find("TX_Message")
-	if(msg.length > 0) {
+function getHex(data){
+	var msg=$(data).find("TX_Message")
+	if(msg.length>0){
 		return msg.text();
-	} else {
+	}else{
 		return data;
 	}
 }
 function HexToString(s) {
 	return Enumerable.range(0,s.length).where("$%2==0").select(function(index){return String.fromCharCode(parseInt(s.substr(index,2),16));}).toJoinedString();
 }
-function factoryATM(code) {
-	switch(code) {
-		case "4010":
-			return new ATM4010ATM();
-		case "4060":
-			return new ATM4060ATM();
-		case "4070":
-			return new ATM4070ATM();
-		case "4071":
-			return new ATM4071ATM();
-		case "1020": //結帳
-			return new ATM1020ATM();
-	}
-}
-function factoryHost(code) {
-	switch(code) {
-		case "4010":
-			return new ATM4010Host();
-		case "4060":
-		case "4070":
-		case "4071":
-			return new ATM4060Host();
-		case "1020": //結帳
-			return new ATM1020Host();
-		case "1060": //BAD TRANSACTION REJECT BY HOST
-			return new ATM1060Host();
-	}
+function factory(code) {
+	var win=window;
+	return new win[code]();
 }
 // 以下為電文規格,
 // 依規格加入欄位名稱及長度,
@@ -99,7 +75,7 @@ function factoryHost(code) {
 // 大項底下有細分細項時,大項的長度就設為一,取其長度byte,例如this.TOTINF_F9=1;
 // 大項無資料時長度值為00,
 // 例如AMT_0B=1, 其長度應為11, 但因無資料, 故只有長度值為00的一個byte。
-function ATM4010ATM() {
+function ATM4010(){
 	// INMSGHD
 	this.__交易代號=4;
 	this.__送信日期時間=10;
@@ -141,7 +117,7 @@ function ATM4010ATM() {
 	this.MAC_04=5;
 	this.TERMID_05=6;
 }
-function ATM4010Host() {
+function Host4010() {
 	// OUTNMSGHD
 	this.__電文格式=4;
 	this.__交易序號=5;
@@ -164,7 +140,7 @@ function ATM4010Host() {
 	this.STAN_NO_07=8;
 	this.轉帳入帳日期_06=1;
 }
-function ATM4060ATM() {
+function ATM4060() {
 	// INMSGHD
 	this.__交易代號=4;
 	this.__送信日期時間=10;
@@ -206,7 +182,7 @@ function ATM4060ATM() {
 	this.MAC_04=5;
 	this.TERMID_05=6;
 }
-function ATM4060Host() {
+function Host4060() {
 	// OUTNMSGHD
 	this.__電文格式=4;
 	this.__交易序號=5;
@@ -229,7 +205,7 @@ function ATM4060Host() {
 	this.STAN_NO_07=8;
 	this.轉帳入帳日期_06=7;
 }
-function ATM4071ATM() {
+function ATM4071() {
 	// INMSGHD
 	this.__交易代號=4;
 	this.__送信日期時間=10;
@@ -271,7 +247,7 @@ function ATM4071ATM() {
 	this.MAC_04=5;
 	this.TERMID_05=6;
 }
-function ATM4070ATM() {
+function ATM4070() {
 	// INMSGHD
 	this.__交易代號=4;
 	this.__送信日期時間=10;
@@ -313,7 +289,7 @@ function ATM4070ATM() {
 	this.MAC_04=5;
 	this.TERMID_05=6;
 }
-function ATM1020ATM() {
+function ATM1020() {
 	// INMSGHD
 	this.__交易代號=4;
 	this.__送信日期時間=10;
@@ -355,7 +331,7 @@ function ATM1020ATM() {
 	this.MAC_04=1;
 	this.TERMID_05=6;
 }
-function ATM1020Host() {
+function Host1020() {
 	// OUTNMSGHD
 	this.__電文格式=4;
 	this.__交易序號=5;
@@ -378,7 +354,7 @@ function ATM1020Host() {
 	this.STAN_NO_07=1;
 	this.轉帳入帳日期_06=1;
 }
-function ATM1060Host() {
+function Host1060() {
 	// OUTNMSGHD
 	this.__電文格式=4;
 	this.__交易序號=5;
